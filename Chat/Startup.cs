@@ -26,16 +26,21 @@ namespace Chat
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddCors();
-            services.AddDbContext<ChatDBContext>(options =>
+
+            /*services.AddDbContext<ChatDBContext>(options =>
             {
                 var config = new ConfigurationBuilder()
                     .AddJsonFile("appsettings.json")
                     .Build();
                 options.UseNpgsql(config.GetConnectionString("ChatDBConnection"));
+            });*/
+            services.AddDbContext<ChatDBContext>(options =>
+            {
+                options.UseInMemoryDatabase("chatdb");
             });
 
             services.AddControllers();
-            services.AddSignalR();
+            services.AddSignalR().AddNewtonsoftJsonProtocol();
             services.AddSingleton<IUserIdProvider, ChatUserIdProvider>();
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options =>
